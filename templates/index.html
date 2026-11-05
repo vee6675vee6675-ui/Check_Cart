@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ตรวจเช็กสภาพรถเข็น</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 p-4">
+  <div class="max-w-md mx-auto bg-white rounded-2xl shadow p-5">
+    
+    <div class="border-b pb-3 mb-4 flex items-center justify-between">
+      <div>
+        <h1 class="text-xl font-bold text-slate-800">🛒 ตรวจสภาพรถเข็น</h1>
+        <p class="text-xs text-slate-500">คันที่ 1-XXX (Mobile + Cloud)</p>
+      </div>
+      <a href="/download-excel" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg font-medium shadow">
+        📥 โหลด Excel
+      </a>
+    </div>
+
+    <!-- หน้าต่างสแกนกล้อง -->
+    <div id="scanner-wrapper" class="hidden mb-4 bg-slate-50 p-3 rounded-xl border border-dashed border-slate-300">
+      <div id="reader" class="w-full overflow-hidden rounded-lg"></div>
+      <button type="button" onclick="stopScanner()" class="w-full mt-2 bg-rose-100 text-rose-600 py-1.5 rounded-lg text-sm font-semibold">ปิดกล้อง</button>
+    </div>
+
+    <form id="checkForm" onsubmit="handleFormSubmit(event)">
+      <div class="space-y-4 mb-5">
+        <div>
+          <label class="block text-sm font-semibold mb-1">รหัสรถเข็น (บาร์โค้ด)</label>
+          <div class="flex gap-2">
+            <input type="text" id="cart_id" placeholder="CART-001" required
+                   class="w-full p-2.5 border rounded-xl font-bold uppercase focus:ring-2 focus:ring-blue-500 text-blue-900">
+            <button type="button" onclick="startScanner()" class="bg-slate-800 text-white px-4 rounded-xl text-sm font-medium shrink-0">
+              📷 สแกน
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold mb-1">รหัสผู้ตรวจสอบ (ID)</label>
+          <input type="text" id="inspector_id" placeholder="EMP-01" required
+                 class="w-full p-2.5 border rounded-xl font-semibold uppercase focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div class="space-y-2 pt-2">
+          <!-- 1. ล้อ -->
+          <div class="flex items-center justify-between p-2.5 bg-slate-50 border rounded-xl">
+            <span class="font-medium text-sm">1. ระบบล้อ</span>
+            <div class="flex gap-1.5">
+              <label class="cursor-pointer">
+                <input type="radio" name="wheel" value="PASS" checked class="peer sr-only">
+                <span class="px-3 py-1 text-xs rounded-lg border peer-checked:bg-emerald-500 peer-checked:text-white font-medium">ผ่าน</span>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="wheel" value="FAIL" class="peer sr-only">
+                <span class="px-3 py-1 text-xs rounded-lg border peer-checked:bg-rose-500 peer-checked:text-white font-medium">ไม่ผ่าน</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 2. น็อต -->
+          <div class="flex items-center justify-between p-2.5 bg-slate-50 border rounded-xl">
+            <span class="font-medium text-sm">2. น็อตและข้อต่อ</span>
+            <div class="flex gap-1.5
