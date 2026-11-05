@@ -3,27 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ตรวจเช็กสภาพรถเข็น</title>
+  <title>ตรวจสภาพรถเข็น</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/html5-qrcode"></script>
+  <!-- โหลดไลบรารีสแกนบาร์โค้ดเวอร์ชันเสถียร -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+  <!-- โหลดไลบรารีสร้างบาร์โค้ดสำหรับสั่งพิมพ์แปะรถเข็น -->
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <style>
+    #reader video {
+      border-radius: 0.75rem;
+      object-fit: cover;
+      width: 100% !important;
+      height: 240px !important;
+    }
+    @media print {
+      body * { visibility: hidden; }
+      #printArea, #printArea * { visibility: visible; }
+      #printArea { position: absolute; left: 0; top: 0; width: 100%; display: grid !important; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+    }
+  </style>
 </head>
-<body class="bg-slate-100 min-h-screen text-slate-800 p-4">
+<body class="bg-slate-100 min-h-screen text-slate-800 p-3 sm:p-4">
   <div class="max-w-md mx-auto bg-white rounded-2xl shadow p-5">
     
+    <!-- แถบหัวข้อและปุ่มเครื่องมือ -->
     <div class="border-b pb-3 mb-4 flex items-center justify-between">
       <div>
         <h1 class="text-xl font-bold text-slate-800">🛒 ตรวจสภาพรถเข็น</h1>
-        <p class="text-xs text-slate-500">คันที่ 1-XXX (Mobile + Cloud)</p>
+        <p class="text-xs text-slate-500">ระบบตรวจสอบ & สแกนบาร์โค้ด</p>
       </div>
-      <a href="/download-excel" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg font-medium shadow">
-        📥 โหลด Excel
-      </a>
+      <div class="flex gap-1.5">
+        <button type="button" onclick="openBarcodeModal()" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1.5 rounded-lg font-medium shadow">
+          🏷️ สร้างบาร์โค้ด
+        </button>
+        <a href="/download-excel" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1.5 rounded-lg font-medium shadow flex items-center">
+          📥 Excel
+        </a>
+      </div>
     </div>
 
-    <!-- หน้าต่างสแกนกล้อง -->
-    <div id="scanner-wrapper" class="hidden mb-4 bg-slate-50 p-3 rounded-xl border border-dashed border-slate-300">
-      <div id="reader" class="w-full overflow-hidden rounded-lg"></div>
-      <button type="button" onclick="stopScanner()" class="w-full mt-2 bg-rose-100 text-rose-600 py-1.5 rounded-lg text-sm font-semibold">ปิดกล้อง</button>
+    <!-- ส่วนแสดงกล้องสแกน -->
+    <div id="scannerSection" class="hidden mb-4 bg-slate-900 p-3 rounded-2xl border-2 border-blue-500 shadow-inner">
+      <div class="flex justify-between items-center text-white text-xs mb-2 px-1">
+        <span>📷 เล็งกล้องไปที่แถบบาร์โค้ดรถเข็น</span>
+        <button type="button" onclick="stopScanner()" class="text-rose-400 font-bold px-2 py-0.5 rounded bg-rose-950/60 border border-rose-500/30">ปิด</button>
+      </div>
+      <div id="reader" class="w-full bg-black rounded-xl overflow-hidden min-h-[220px]"></div>
+      <p id="scanStatus" class="text-center text-xs text-slate-400 mt-2">กำลังเตรียมเปิดกล้อง...</p>
     </div>
 
     <form id="checkForm" onsubmit="handleFormSubmit(event)">
@@ -32,8 +58,8 @@
           <label class="block text-sm font-semibold mb-1">รหัสรถเข็น (บาร์โค้ด)</label>
           <div class="flex gap-2">
             <input type="text" id="cart_id" placeholder="CART-001" required
-                   class="w-full p-2.5 border rounded-xl font-bold uppercase focus:ring-2 focus:ring-blue-500 text-blue-900">
-            <button type="button" onclick="startScanner()" class="bg-slate-800 text-white px-4 rounded-xl text-sm font-medium shrink-0">
+                   class="w-full p-2.5 border rounded-xl font-bold uppercase focus:ring-2 focus:ring-blue-500 text-blue-900 bg-slate-50">
+            <button type="button" onclick="startScanner()" class="bg-blue-600 active:bg-blue-800 text-white px-4 rounded-xl text-sm font-semibold flex items-center gap-1 shrink-0 shadow">
               📷 สแกน
             </button>
           </div>
@@ -45,10 +71,10 @@
                  class="w-full p-2.5 border rounded-xl font-semibold uppercase focus:ring-2 focus:ring-blue-500">
         </div>
 
+        <!-- รายการตรวจสอบ 4 จุด -->
         <div class="space-y-2 pt-2">
-          <!-- 1. ล้อ -->
           <div class="flex items-center justify-between p-2.5 bg-slate-50 border rounded-xl">
-            <span class="font-medium text-sm">1. ระบบล้อ</span>
+            <span class="font-medium text-sm">1. ระบบล้อ (หมุนลื่น/ไม่ฝืด)</span>
             <div class="flex gap-1.5">
               <label class="cursor-pointer">
                 <input type="radio" name="wheel" value="PASS" checked class="peer sr-only">
@@ -61,7 +87,229 @@
             </div>
           </div>
 
-          <!-- 2. น็อต -->
           <div class="flex items-center justify-between p-2.5 bg-slate-50 border rounded-xl">
-            <span class="font-medium text-sm">2. น็อตและข้อต่อ</span>
-            <div class="flex gap-1.5
+            <span class="font-medium text-sm">2. น็อตและข้อต่อ (แน่นหนา)</span>
+            <div class="flex gap-1.5">
+              <label class="cursor-pointer">
+                <input type="radio" name="bolt" value="PASS" checked class="peer sr-only">
+                <span class="px-3 py-1 text-xs rounded-lg border peer-checked:bg-emerald-500 peer-checked:text-white font-medium">ผ่าน</span>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="bolt" value="FAIL" class="peer sr-only">
+                <span class="px-3 py-1 text-xs rounded-lg border peer-checked:bg-rose-500 peer-checked:text-white font-medium">ไม่ผ่าน</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between p-2.5 bg-slate-50 border rounded-xl">
+            <span class="font-medium text-sm">3. ขอบมน / ลบคมเหล็ก</span>
+            <div class="flex gap-1.5">
+              <label class="cursor-pointer">
+                <input type="radio" name="edge" value="PASS" checked class="peer sr-only">
+                <span class="px-3 py-1 text-xs rounded-lg border peer-checked:bg-emerald-500 peer-checked:text-white font-medium">ผ่าน</span>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="edge" value="FAIL" class="peer sr-only">
+                <span class="px-3 py-1 text-xs rounded-lg border peer-checked:bg-rose-500 peer-checked:text-white font-medium">ไม่ผ่าน</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between p-2.5 bg-slate-50 border rounded-xl">
+            <span class="font-medium text-sm">4. ด้ามเข็น & โครงสร้าง</span>
+            <div class="flex gap-1.5">
+              <label class="cursor-pointer">
+                <input type="radio" name="frame" value="PASS" checked class="peer sr-only">
+                <span class="px-3 py-1 text-xs rounded-lg border peer-checked:bg-emerald-500 peer-checked:text-white font-medium">ผ่าน</span>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="frame" value="FAIL" class="peer sr-only">
+                <span class="px-3 py-1 text-xs rounded-lg border peer-checked:bg-rose-500 peer-checked:text-white font-medium">ไม่ผ่าน</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold mb-1">หมายเหตุ / จุดที่ต้องซ่อม</label>
+          <input type="text" id="remark" placeholder="เช่น ยางล้อแตก, น็อตยึดหลุด 1 ตัว"
+                 class="w-full p-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500">
+        </div>
+      </div>
+
+      <button type="submit" id="submitBtn" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-3.5 rounded-xl transition shadow">
+        🚀 ส่งข้อมูลบันทึกทันที
+      </button>
+    </form>
+  </div>
+
+  <!-- หน้าต่างสร้างแถบบาร์โค้ดสำหรับสั่งพิมพ์แปะรถเข็น -->
+  <div id="barcodeModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 max-h-[90vh] flex flex-col">
+      <div class="flex justify-between items-center pb-3 border-b mb-3">
+        <h2 class="font-bold text-base text-slate-800">🏷️ พิมพ์แถบบาร์โค้ดติดรถเข็น</h2>
+        <button type="button" onclick="closeBarcodeModal()" class="text-slate-400 hover:text-slate-700 text-lg">✕</button>
+      </div>
+      <div class="flex gap-2 mb-3">
+        <input type="number" id="startNo" value="1" min="1" class="w-1/2 p-2 border rounded-lg text-sm" placeholder="คันที่เริ่มต้น">
+        <input type="number" id="endNo" value="30" min="1" class="w-1/2 p-2 border rounded-lg text-sm" placeholder="คันที่สิ้นสุด">
+        <button type="button" onclick="generateBarcodes()" class="bg-indigo-600 text-white px-4 rounded-lg text-sm font-semibold shrink-0">สร้าง</button>
+      </div>
+      <div id="printArea" class="flex-1 overflow-y-auto border rounded-xl p-3 bg-slate-50 flex flex-wrap gap-3 justify-center"></div>
+      <div class="pt-3 border-t mt-3 flex justify-end gap-2">
+        <button type="button" onclick="closeBarcodeModal()" class="px-4 py-2 border rounded-xl text-sm font-medium">ปิด</button>
+        <button type="button" onclick="window.print()" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-sm font-bold shadow">🖨️ สั่งพิมพ์ (A4)</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let html5QrCode = null;
+    let isScanning = false;
+
+    async function startScanner() {
+      const section = document.getElementById('scannerSection');
+      const status = document.getElementById('scanStatus');
+      
+      if (isScanning) {
+        stopScanner();
+        return;
+      }
+
+      section.classList.remove('hidden');
+      status.innerText = "กำลังขออนุญาตเปิดกล้อง...";
+
+      try {
+        html5QrCode = new Html5Qrcode("reader");
+        const config = {
+          fps: 15,
+          qrbox: { width: 260, height: 160 },
+          aspectRatio: 1.5
+        };
+
+        await html5QrCode.start(
+          { facingMode: { exact: "environment" } },
+          config,
+          onScanSuccess,
+          () => {}
+        );
+        isScanning = true;
+        status.innerText = "กล้องพร้อมสแกน หันท้ายกล้องไปที่บาร์โค้ดได้เลย";
+      } catch (err) {
+        // Fallback กรณีอุปกรณ์บางรุ่นไม่รองรับ facingMode: exact
+        try {
+          await html5QrCode.start(
+            { facingMode: "environment" },
+            { fps: 15, qrbox: { width: 260, height: 160 } },
+            onScanSuccess,
+            () => {}
+          );
+          isScanning = true;
+          status.innerText = "กล้องพร้อมสแกน หันท้ายกล้องไปที่บาร์โค้ดได้เลย";
+        } catch (fallbackErr) {
+          status.innerText = "เปิดกล้องไม่สำเร็จ: กรุณาอนุญาตสิทธิ์กล้องบนเบราว์เซอร์";
+          alert("ไม่สามารถเปิดกล้องได้ กรุณากดยอมรับการเข้าถึงกล้อง (Allow Camera) บนหน้าเบราว์เซอร์");
+        }
+      }
+    }
+
+    function onScanSuccess(decodedText) {
+      document.getElementById('cart_id').value = decodedText.trim();
+      stopScanner();
+      // ระบบสั่นเบาๆ เมื่อสแกนติด (บนเครื่องที่รองรับ)
+      if (navigator.vibrate) navigator.vibrate(100);
+    }
+
+    function stopScanner() {
+      if (html5QrCode && isScanning) {
+        html5QrCode.stop().then(() => {
+          html5QrCode.clear();
+          document.getElementById('scannerSection').classList.add('hidden');
+          isScanning = false;
+        }).catch(() => {
+          document.getElementById('scannerSection').classList.add('hidden');
+          isScanning = false;
+        });
+      } else {
+        document.getElementById('scannerSection').classList.add('hidden');
+        isScanning = false;
+      }
+    }
+
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerText = "กำลังบันทึก...";
+
+      const payload = {
+        cart_id: document.getElementById('cart_id').value.trim(),
+        inspector_id: document.getElementById('inspector_id').value.trim(),
+        wheel: document.querySelector('input[name="wheel"]:checked').value,
+        bolt: document.querySelector('input[name="bolt"]:checked').value,
+        edge: document.querySelector('input[name="edge"]:checked').value,
+        frame: document.querySelector('input[name="frame"]:checked').value,
+        remark: document.getElementById('remark').value.trim()
+      };
+
+      try {
+        const res = await fetch('/api/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        
+        if (result.success) {
+          alert(`บันทึกข้อมูลเรียบร้อย!\nรถเข็น: ${payload.cart_id}\nผลการตรวจ: ${result.status === 'PASS' ? '✅ ผ่าน' : '⚠️ ส่งซ่อม'}`);
+          document.getElementById('cart_id').value = '';
+          document.getElementById('remark').value = '';
+        } else {
+          alert("ข้อผิดพลาด: " + result.error);
+        }
+      } catch (err) {
+        alert("ไม่สามารถส่งข้อมูลได้ กรุณาลองใหม่อีกครั้ง");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "🚀 ส่งข้อมูลบันทึกทันที";
+      }
+    }
+
+    // ฟังก์ชันสร้างบาร์โค้ด
+    function openBarcodeModal() {
+      document.getElementById('barcodeModal').classList.remove('hidden');
+      generateBarcodes();
+    }
+    function closeBarcodeModal() {
+      document.getElementById('barcodeModal').classList.add('hidden');
+    }
+    function generateBarcodes() {
+      const start = parseInt(document.getElementById('startNo').value) || 1;
+      const end = parseInt(document.getElementById('endNo').value) || start;
+      const container = document.getElementById('printArea');
+      container.innerHTML = '';
+
+      for (let i = start; i <= end; i++) {
+        const code = `CART-${String(i).padStart(3, '0')}`;
+        const card = document.createElement('div');
+        card.className = "bg-white p-2 border-2 border-dashed border-slate-300 rounded-lg text-center w-[140px]";
+        
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.id = `barcode-${i}`;
+        svg.className = "mx-auto";
+        card.appendChild(svg);
+        container.appendChild(card);
+
+        JsBarcode(`#barcode-${i}`, code, {
+          format: "CODE128",
+          width: 1.4,
+          height: 40,
+          displayValue: true,
+          fontSize: 12,
+          margin: 0
+        });
+      }
+    }
+  </script>
+</body>
+</html>
