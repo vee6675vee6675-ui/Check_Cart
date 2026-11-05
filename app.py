@@ -95,7 +95,6 @@ def dashboard_data():
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
     
-    # ดึงการตรวจล่าสุดของรถแต่ละคัน
     c.execute('''
         SELECT * FROM inspections
         WHERE id IN (
@@ -110,7 +109,6 @@ def dashboard_data():
     pass_count = sum(1 for r in rows if r['overall_status'] == 'ผ่าน')
     fail_count = sum(1 for r in rows if r['overall_status'] == 'ไม่ผ่าน')
 
-    # ประมวลผลปัญหาที่พบในแต่ละคัน
     for r in rows:
         defects = []
         for key, name in CHECK_ITEMS:
