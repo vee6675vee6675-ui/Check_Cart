@@ -25,30 +25,30 @@
   
   <div class="max-w-2xl mx-auto space-y-4">
 
-    <!-- Card หัวข้อหลัก & ปุ่มเมนู -->
+    <!-- Card ส่วนหัว & เมนูนำทาง -->
     <div class="bg-white rounded-2xl shadow p-4 sm:p-5">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b pb-4">
         <div>
           <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">🛒 ตรวจสภาพรถเข็น</h1>
-          <p class="text-xs text-slate-500 font-medium">ระบบบำรุงรักษา & สแกนบาร์โค้ดประจำวัน (คันที่ 1-XXX)</p>
+          <p class="text-xs text-slate-500 font-medium">บันทึกตรวจเช็กประจำวัน (1-XXX)</p>
         </div>
         <div class="flex items-center gap-1.5 flex-wrap">
-          <button type="button" onclick="openDashboardModal()" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-xl font-bold shadow flex items-center gap-1 transition">
+          <button type="button" onclick="openDashboardModal()" class="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-3 py-2 rounded-xl font-bold shadow flex items-center gap-1 transition">
             📊 แดชบอร์ด
           </button>
-          <button type="button" onclick="openBarcodeModal()" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-xl font-bold shadow flex items-center gap-1 transition">
+          <button type="button" onclick="openBarcodeModal()" class="text-xs bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white px-3 py-2 rounded-xl font-bold shadow flex items-center gap-1 transition">
             🏷️ ทำบาร์โค้ด
           </button>
-          <a href="/download-excel" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-xl font-bold shadow flex items-center gap-1 transition">
+          <a href="/download-excel" class="text-xs bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white px-3 py-2 rounded-xl font-bold shadow flex items-center gap-1 transition">
             📥 Excel
           </a>
         </div>
       </div>
 
-      <!-- สแกนเนอร์เปิดกล้อง -->
+      <!-- สแกนเนอร์กล้อง -->
       <div id="scannerSection" class="hidden mt-4 bg-slate-950 p-3 rounded-2xl border-2 border-blue-500 shadow-xl">
         <div class="flex justify-between items-center text-white text-xs mb-2 px-1">
-          <span class="font-bold">📷 เล็งกล้องไปที่แถบบาร์โค้ดรถเข็น</span>
+          <span class="font-bold">📷 เล็งกล้องไปที่บาร์โค้ดรถเข็น</span>
           <button type="button" onclick="stopScanner()" class="text-rose-400 font-bold px-2 py-0.5 rounded bg-rose-950/80 border border-rose-500/40">ปิดกล้อง</button>
         </div>
         <div id="reader" class="w-full bg-black rounded-xl overflow-hidden min-h-[200px]"></div>
@@ -77,53 +77,48 @@
           </div>
         </div>
 
-        <!-- รายการตรวจสอบ 14 ข้อย่อย -->
+        <!-- รายการตรวจสอบ 14 ข้อย่อย (เหลือแค่ ผ่าน / ไม่ผ่าน) -->
         <div class="space-y-4 mb-5">
 
           <!-- หมวด 1 -->
           <div class="border rounded-2xl p-3 sm:p-4 bg-slate-50/70 shadow-sm">
-            <div class="font-black text-blue-900 text-xs sm:text-sm uppercase mb-2 border-b border-blue-100 pb-1.5 flex items-center gap-1">
-              <span>🔧 1. ระบบล้อ (Wheels & Casters)</span>
+            <div class="font-black text-blue-900 text-xs sm:text-sm uppercase mb-2 border-b border-blue-100 pb-1.5">
+              🔧 1. ระบบล้อ (Wheels & Casters)
             </div>
             <div class="space-y-2 text-xs sm:text-sm">
               <div class="flex items-center justify-between py-1 border-b border-slate-200/60">
                 <span class="font-medium">1.1 สภาพผิวยางล้อ (ไม่แตกลายงา/ไม่ร่อน)</span>
-                <div class="flex gap-1 shrink-0">
-                  <label><input type="radio" name="c_1_1" value="ผ่าน" checked class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
-                  <label><input type="radio" name="c_1_1" value="ไม่ผ่าน" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
-                  <label><input type="radio" name="c_1_1" value="ไม่ระบุ" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-slate-500 peer-checked:text-white peer-checked:border-slate-500 cursor-pointer">ไม่ระบุ</span></label>
+                <div class="flex gap-1.5 shrink-0">
+                  <label><input type="radio" name="c_1_1" value="ผ่าน" checked class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
+                  <label><input type="radio" name="c_1_1" value="ไม่ผ่าน" class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
                 </div>
               </div>
               <div class="flex items-center justify-between py-1 border-b border-slate-200/60">
                 <span class="font-medium">1.2 การหมุนลูกปืน (ล้อหมุนลื่น/ไม่ฝืด)</span>
-                <div class="flex gap-1 shrink-0">
-                  <label><input type="radio" name="c_1_2" value="ผ่าน" checked class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
-                  <label><input type="radio" name="c_1_2" value="ไม่ผ่าน" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
-                  <label><input type="radio" name="c_1_2" value="ไม่ระบุ" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-slate-500 peer-checked:text-white peer-checked:border-slate-500 cursor-pointer">ไม่ระบุ</span></label>
+                <div class="flex gap-1.5 shrink-0">
+                  <label><input type="radio" name="c_1_2" value="ผ่าน" checked class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
+                  <label><input type="radio" name="c_1_2" value="ไม่ผ่าน" class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
                 </div>
               </div>
               <div class="flex items-center justify-between py-1 border-b border-slate-200/60">
                 <span class="font-medium">1.3 การเลี้ยว/คอล้อ (หมุน 360° คล่องตัว)</span>
-                <div class="flex gap-1 shrink-0">
-                  <label><input type="radio" name="c_1_3" value="ผ่าน" checked class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
-                  <label><input type="radio" name="c_1_3" value="ไม่ผ่าน" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
-                  <label><input type="radio" name="c_1_3" value="ไม่ระบุ" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-slate-500 peer-checked:text-white peer-checked:border-slate-500 cursor-pointer">ไม่ระบุ</span></label>
+                <div class="flex gap-1.5 shrink-0">
+                  <label><input type="radio" name="c_1_3" value="ผ่าน" checked class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
+                  <label><input type="radio" name="c_1_3" value="ไม่ผ่าน" class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
                 </div>
               </div>
               <div class="flex items-center justify-between py-1 border-b border-slate-200/60">
                 <span class="font-medium">1.4 สิ่งแปลกปลอม (ไม่มีด้าย/เชือกพันแกน)</span>
-                <div class="flex gap-1 shrink-0">
-                  <label><input type="radio" name="c_1_4" value="ผ่าน" checked class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
-                  <label><input type="radio" name="c_1_4" value="ไม่ผ่าน" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
-                  <label><input type="radio" name="c_1_4" value="ไม่ระบุ" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-slate-500 peer-checked:text-white peer-checked:border-slate-500 cursor-pointer">ไม่ระบุ</span></label>
+                <div class="flex gap-1.5 shrink-0">
+                  <label><input type="radio" name="c_1_4" value="ผ่าน" checked class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
+                  <label><input type="radio" name="c_1_4" value="ไม่ผ่าน" class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
                 </div>
               </div>
               <div class="flex items-center justify-between py-1">
-                <span class="font-medium">1.5 ระบบเบรกล้อ (ถ้ามี ล็อกแน่นหนา)</span>
-                <div class="flex gap-1 shrink-0">
-                  <label><input type="radio" name="c_1_5" value="ผ่าน" checked class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
-                  <label><input type="radio" name="c_1_5" value="ไม่ผ่าน" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
-                  <label><input type="radio" name="c_1_5" value="ไม่ระบุ" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-slate-500 peer-checked:text-white peer-checked:border-slate-500 cursor-pointer">ไม่ระบุ</span></label>
+                <span class="font-medium">1.5 ระบบเบรกล้อ (ล็อกแน่นหนา/ถ้ามี)</span>
+                <div class="flex gap-1.5 shrink-0">
+                  <label><input type="radio" name="c_1_5" value="ผ่าน" checked class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
+                  <label><input type="radio" name="c_1_5" value="ไม่ผ่าน" class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
                 </div>
               </div>
             </div>
@@ -131,24 +126,22 @@
 
           <!-- หมวด 2 -->
           <div class="border rounded-2xl p-3 sm:p-4 bg-slate-50/70 shadow-sm">
-            <div class="font-black text-blue-900 text-xs sm:text-sm uppercase mb-2 border-b border-blue-100 pb-1.5 flex items-center gap-1">
-              <span>🔩 2. จุดยึดและน็อต (Fasteners)</span>
+            <div class="font-black text-blue-900 text-xs sm:text-sm uppercase mb-2 border-b border-blue-100 pb-1.5">
+              🔩 2. จุดยึดและน็อต (Fasteners)
             </div>
             <div class="space-y-2 text-xs sm:text-sm">
               <div class="flex items-center justify-between py-1 border-b border-slate-200/60">
                 <span class="font-medium">2.1 น็อตยึดแป้นล้อ (ขันแน่นครบ 4 ตัว)</span>
-                <div class="flex gap-1 shrink-0">
-                  <label><input type="radio" name="c_2_1" value="ผ่าน" checked class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
-                  <label><input type="radio" name="c_2_1" value="ไม่ผ่าน" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
-                  <label><input type="radio" name="c_2_1" value="ไม่ระบุ" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-slate-500 peer-checked:text-white peer-checked:border-slate-500 cursor-pointer">ไม่ระบุ</span></label>
+                <div class="flex gap-1.5 shrink-0">
+                  <label><input type="radio" name="c_2_1" value="ผ่าน" checked class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
+                  <label><input type="radio" name="c_2_1" value="ไม่ผ่าน" class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
                 </div>
               </div>
               <div class="flex items-center justify-between py-1">
                 <span class="font-medium">2.2 น็อต/สลักจุดพับ/มือจับ (อยู่ครบ)</span>
-                <div class="flex gap-1 shrink-0">
-                  <label><input type="radio" name="c_2_2" value="ผ่าน" checked class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
-                  <label><input type="radio" name="c_2_2" value="ไม่ผ่าน" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
-                  <label><input type="radio" name="c_2_2" value="ไม่ระบุ" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-slate-500 peer-checked:text-white peer-checked:border-slate-500 cursor-pointer">ไม่ระบุ</span></label>
+                <div class="flex gap-1.5 shrink-0">
+                  <label><input type="radio" name="c_2_2" value="ผ่าน" checked class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
+                  <label><input type="radio" name="c_2_2" value="ไม่ผ่าน" class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
                 </div>
               </div>
             </div>
@@ -156,40 +149,36 @@
 
           <!-- หมวด 3 -->
           <div class="border rounded-2xl p-3 sm:p-4 bg-slate-50/70 shadow-sm">
-            <div class="font-black text-blue-900 text-xs sm:text-sm uppercase mb-2 border-b border-blue-100 pb-1.5 flex items-center gap-1">
-              <span>🛡️ 3. โครงสร้างและความปลอดภัย (Structure & Safety)</span>
+            <div class="font-black text-blue-900 text-xs sm:text-sm uppercase mb-2 border-b border-blue-100 pb-1.5">
+              🛡️ 3. โครงสร้างและความปลอดภัย (Structure & Safety)
             </div>
             <div class="space-y-2 text-xs sm:text-sm">
               <div class="flex items-center justify-between py-1 border-b border-slate-200/60">
-                <span class="font-medium">3.1 ความคมของขอบเหล็ก (ลบมุมมนเรียบร้อย)</span>
-                <div class="flex gap-1 shrink-0">
-                  <label><input type="radio" name="c_3_1" value="ผ่าน" checked class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
-                  <label><input type="radio" name="c_3_1" value="ไม่ผ่าน" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
-                  <label><input type="radio" name="c_3_1" value="ไม่ระบุ" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-slate-500 peer-checked:text-white peer-checked:border-slate-500 cursor-pointer">ไม่ระบุ</span></label>
+                <span class="font-medium">3.1 ความคมของขอบเหล็ก (ลบมุมเรียบร้อย)</span>
+                <div class="flex gap-1.5 shrink-0">
+                  <label><input type="radio" name="c_3_1" value="ผ่าน" checked class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
+                  <label><input type="radio" name="c_3_1" value="ไม่ผ่าน" class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
                 </div>
               </div>
               <div class="flex items-center justify-between py-1 border-b border-slate-200/60">
                 <span class="font-medium">3.2 ความสมบูรณ์ของรอยเชื่อม (ไม่แตกแยก)</span>
-                <div class="flex gap-1 shrink-0">
-                  <label><input type="radio" name="c_3_2" value="ผ่าน" checked class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
-                  <label><input type="radio" name="c_3_2" value="ไม่ผ่าน" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
-                  <label><input type="radio" name="c_3_2" value="ไม่ระบุ" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-slate-500 peer-checked:text-white peer-checked:border-slate-500 cursor-pointer">ไม่ระบุ</span></label>
+                <div class="flex gap-1.5 shrink-0">
+                  <label><input type="radio" name="c_3_2" value="ผ่าน" checked class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
+                  <label><input type="radio" name="c_3_2" value="ไม่ผ่าน" class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
                 </div>
               </div>
               <div class="flex items-center justify-between py-1 border-b border-slate-200/60">
                 <span class="font-medium">3.3 การบิดงอ/เสียรูปทรง (วางระนาบไม่โยก)</span>
-                <div class="flex gap-1 shrink-0">
-                  <label><input type="radio" name="c_3_3" value="ผ่าน" checked class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
-                  <label><input type="radio" name="c_3_3" value="ไม่ผ่าน" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
-                  <label><input type="radio" name="c_3_3" value="ไม่ระบุ" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-slate-500 peer-checked:text-white peer-checked:border-slate-500 cursor-pointer">ไม่ระบุ</span></label>
+                <div class="flex gap-1.5 shrink-0">
+                  <label><input type="radio" name="c_3_3" value="ผ่าน" checked class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
+                  <label><input type="radio" name="c_3_3" value="ไม่ผ่าน" class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
                 </div>
               </div>
               <div class="flex items-center justify-between py-1">
                 <span class="font-medium">3.4 สนิมและสภาพสี (ไม่มีสนิมกัดลึก)</span>
-                <div class="flex gap-1 shrink-0">
-                  <label><input type="radio" name="c_3_4" value="ผ่าน" checked class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
-                  <label><input type="radio" name="c_3_4" value="ไม่ผ่าน" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
-                  <label><input type="radio" name="c_3_4" value="ไม่ระบุ" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-slate-500 peer-checked:text-white peer-checked:border-slate-500 cursor-pointer">ไม่ระบุ</span></label>
+                <div class="flex gap-1.5 shrink-0">
+                  <label><input type="radio" name="c_3_4" value="ผ่าน" checked class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
+                  <label><input type="radio" name="c_3_4" value="ไม่ผ่าน" class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
                 </div>
               </div>
             </div>
@@ -197,40 +186,37 @@
 
           <!-- หมวด 4 -->
           <div class="border rounded-2xl p-3 sm:p-4 bg-slate-50/70 shadow-sm">
-            <div class="font-black text-blue-900 text-xs sm:text-sm uppercase mb-2 border-b border-blue-100 pb-1.5 flex items-center gap-1">
-              <span>🦾 4. ด้ามเข็นและฟังก์ชัน (Handle & Usability)</span>
+            <div class="font-black text-blue-900 text-xs sm:text-sm uppercase mb-2 border-b border-blue-100 pb-1.5">
+              🦾 4. ด้ามเข็นและฟังก์ชัน (Handle & Usability)
             </div>
             <div class="space-y-2 text-xs sm:text-sm">
               <div class="flex items-center justify-between py-1 border-b border-slate-200/60">
                 <span class="font-medium">4.1 ความแข็งแรงมือจับ (มั่นคงไม่คลอน)</span>
-                <div class="flex gap-1 shrink-0">
-                  <label><input type="radio" name="c_4_1" value="ผ่าน" checked class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
-                  <label><input type="radio" name="c_4_1" value="ไม่ผ่าน" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
-                  <label><input type="radio" name="c_4_1" value="ไม่ระบุ" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-slate-500 peer-checked:text-white peer-checked:border-slate-500 cursor-pointer">ไม่ระบุ</span></label>
+                <div class="flex gap-1.5 shrink-0">
+                  <label><input type="radio" name="c_4_1" value="ผ่าน" checked class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
+                  <label><input type="radio" name="c_4_1" value="ไม่ผ่าน" class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
                 </div>
               </div>
               <div class="flex items-center justify-between py-1 border-b border-slate-200/60">
                 <span class="font-medium">4.2 ระบบพับ/ล็อกมือจับ (ถ้ามี ไม่ดีดหลุด)</span>
-                <div class="flex gap-1 shrink-0">
-                  <label><input type="radio" name="c_4_2" value="ผ่าน" checked class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
-                  <label><input type="radio" name="c_4_2" value="ไม่ผ่าน" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
-                  <label><input type="radio" name="c_4_2" value="ไม่ระบุ" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-slate-500 peer-checked:text-white peer-checked:border-slate-500 cursor-pointer">ไม่ระบุ</span></label>
+                <div class="flex gap-1.5 shrink-0">
+                  <label><input type="radio" name="c_4_2" value="ผ่าน" checked class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
+                  <label><input type="radio" name="c_4_2" value="ไม่ผ่าน" class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
                 </div>
               </div>
               <div class="flex items-center justify-between py-1">
-                <span class="font-medium">4.3 ป้ายรหัสและบาร์โค้ด (ชัดเจน สแกนติดง่าย)</span>
-                <div class="flex gap-1 shrink-0">
-                  <label><input type="radio" name="c_4_3" value="ผ่าน" checked class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
-                  <label><input type="radio" name="c_4_3" value="ไม่ผ่าน" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
-                  <label><input type="radio" name="c_4_3" value="ไม่ระบุ" class="peer sr-only"><span class="px-2.5 py-1 text-xs rounded-lg border font-bold peer-checked:bg-slate-500 peer-checked:text-white peer-checked:border-slate-500 cursor-pointer">ไม่ระบุ</span></label>
+                <span class="font-medium">4.3 ป้ายรหัสและบาร์โค้ด (ชัดเจน สแกนง่าย)</span>
+                <div class="flex gap-1.5 shrink-0">
+                  <label><input type="radio" name="c_4_3" value="ผ่าน" checked class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 cursor-pointer">ผ่าน</span></label>
+                  <label><input type="radio" name="c_4_3" value="ไม่ผ่าน" class="peer sr-only"><span class="px-3 py-1 text-xs rounded-lg border font-bold peer-checked:bg-rose-600 peer-checked:text-white peer-checked:border-rose-600 cursor-pointer">ไม่ผ่าน</span></label>
                 </div>
               </div>
             </div>
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">หมายเหตุ / จุดที่ต้องซ่อมด่วน</label>
-            <input type="text" id="remark" placeholder="เช่น น็อตยึดล้อซ้ายหลังหลวม 1 ตัว"
+            <label class="block text-xs font-bold text-slate-700 mb-1">หมายเหตุ / จุดที่ต้องส่งซ่อม</label>
+            <input type="text" id="remark" placeholder="เช่น น็อตยึดล้อซ้ายหลวม 1 ตัว"
                    class="w-full p-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500">
           </div>
 
@@ -244,7 +230,7 @@
 
   </div>
 
-  <!-- MODAL: Dashboard สรุปภาพรวม -->
+  <!-- MODAL: แดชบอร์ดสรุปภาพรวม -->
   <div id="dashboardModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50">
     <div class="bg-white rounded-2xl max-w-4xl w-full p-4 sm:p-6 max-h-[92vh] flex flex-col shadow-2xl">
       <div class="flex justify-between items-center pb-3 border-b">
@@ -255,7 +241,7 @@
         <button type="button" onclick="closeDashboardModal()" class="text-slate-400 hover:text-slate-700 text-xl font-bold p-1">✕</button>
       </div>
 
-      <!-- สรุปตัวเลขยอดรวม (KPI Cards) -->
+      <!-- การ์ดตัวเลขสรุป KPI -->
       <div class="grid grid-cols-3 gap-3 my-4">
         <div class="bg-slate-50 p-3 rounded-2xl border text-center">
           <p class="text-xs text-slate-500 font-bold">ตรวจแล้วทั้งหมด</p>
@@ -429,7 +415,6 @@
       }
     }
 
-    // ฟังก์ชัน Dashboard
     async function openDashboardModal() {
       document.getElementById('dashboardModal').classList.remove('hidden');
       const tbody = document.getElementById('cartTableBody');
@@ -486,7 +471,6 @@
       document.getElementById('dashboardModal').classList.add('hidden');
     }
 
-    // ฟังก์ชันสร้างบาร์โค้ด
     function openBarcodeModal() {
       document.getElementById('barcodeModal').classList.remove('hidden');
       generateBarcodes();
