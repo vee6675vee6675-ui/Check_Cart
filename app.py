@@ -11,7 +11,7 @@ DB_NAME = "cart_inspection.db"
 CHECK_ITEMS = [
     ("c_1_1", "1.1 สภาพผิวยางล้อ"),
     ("c_1_2", "1.2 การหมุนของลูกปืนล้อ"),
-    ("c_1_3", "1.3 การเลี้ยว/คอล้อ (Swivel)"),
+    ("c_1_3", "1.3 การเลี้ยว/คอล้อ"),
     ("c_1_4", "1.4 สิ่งแปลกปลอม"),
     ("c_1_5", "1.5 ระบบเบรกล้อ"),
     ("c_2_1", "2.1 น็อตยึดแป้นล้อ"),
@@ -65,12 +65,12 @@ def submit():
         has_fail = False
 
         for key, _ in CHECK_ITEMS:
-            val = data.get(key, 'PASS')
-            if val == 'FAIL':
+            val = data.get(key, 'ผ่าน')
+            if val == 'ไม่ผ่าน':
                 has_fail = True
             item_values.append(val)
 
-        overall_status = "FAIL" if has_fail else "PASS"
+        overall_status = "ไม่ผ่าน" if has_fail else "ผ่าน"
 
         conn = sqlite3.connect(DB_NAME)
         c = conn.cursor()
@@ -89,6 +89,42 @@ def submit():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
+@app.route('/api/dashboard-data')
+def dashboard_data():
+    conn = sqlite3.connect(DB_NAME)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+    
+    # ดึงการตรวจล่าสุดของรถแต่ละคัน
+    c.execute('''
+        SELECT * FROM inspections
+        WHERE id IN (
+            SELECT MAX(id) FROM inspections GROUP BY cart_id
+        )
+        ORDER BY cart_id ASC
+    ''')
+    rows = [dict(r) for r in c.fetchall()]
+    conn.close()
+
+    total_carts = len(rows)
+    pass_count = sum(1 for r in rows if r['overall_status'] == 'ผ่าน')
+    fail_count = sum(1 for r in rows if r['overall_status'] == 'ไม่ผ่าน')
+
+    # ประมวลผลปัญหาที่พบในแต่ละคัน
+    for r in rows:
+        defects = []
+        for key, name in CHECK_ITEMS:
+            if r.get(key) == 'ไม่ผ่าน':
+                defects.append(name)
+        r['defects'] = defects
+
+    return jsonify({
+        "total": total_carts,
+        "pass": pass_count,
+        "fail": fail_count,
+        "carts": rows
+    })
+
 @app.route('/download-excel')
 def download_excel():
     conn = sqlite3.connect(DB_NAME)
@@ -101,14 +137,13 @@ def download_excel():
     ws = wb.active
     ws.title = "บันทึกตรวจสภาพรถเข็น"
 
-    headers = ["ลำดับ", "วัน-เวลาที่ตรวจ", "รหัสรถเข็น", "รหัสผู้ตรวจ"] + [name for _, name in CHECK_ITEMS] + ["ผลการตรวจรวม", "หมายเหตุ"]
+    headers = ["ลำดับ", "วัน-เวลาที่ตรวจ", "รหัสรถเข็น", "รหัสผู้ตรวจ"] + [name for _, name in CHECK_ITEMS] + ["ผลตรวจรวม", "หมายเหตุ"]
     ws.append(headers)
 
-    header_fill = PatternFill(start_color="1E293B", end_color="1E293B", fill_type="solid")
+    header_fill = PatternFill(start_color="0F172A", end_color="0F172A", fill_type="solid")
     header_font = Font(color="FFFFFF", bold=True, size=11)
-    pass_fill = PatternFill(start_color="D1FAE5", end_color="D1FAE5", fill_type="solid")
-    fail_fill = PatternFill(start_color="FFE4E6", end_color="FFE4E6", fill_type="solid")
-    na_fill = PatternFill(start_color="F1F5F9", end_color="F1F5F9", fill_type="solid")
+    pass_fill = PatternFill(start_color="DCFCE7", end_color="DCFCE7", fill_type="solid")
+    fail_fill = PatternFill(start_color="FEE2E2", end_color="FEE2E2", fill_type="solid")
     thin_border = Border(left=Side(style='thin', color='CBD5E1'), right=Side(style='thin', color='CBD5E1'),
                          top=Side(style='thin', color='CBD5E1'), bottom=Side(style='thin', color='CBD5E1'))
 
@@ -124,21 +159,18 @@ def download_excel():
             cell = ws.cell(row=r_idx, column=c_idx)
             cell.border = thin_border
             val = str(cell.value)
-            if val == "PASS":
+            if val == "ผ่าน":
                 cell.fill = pass_fill
                 cell.alignment = Alignment(horizontal="center")
-            elif val == "FAIL":
+            elif val == "ไม่ผ่าน":
                 cell.fill = fail_fill
                 cell.font = Font(color="DC2626", bold=True)
-                cell.alignment = Alignment(horizontal="center")
-            elif val == "N/A":
-                cell.fill = na_fill
                 cell.alignment = Alignment(horizontal="center")
 
     for col in ws.columns:
         max_len = max(len(str(cell.value or '')) for cell in col)
         col_letter = openpyxl.utils.get_column_letter(col[0].column)
-        ws.column_dimensions[col_letter].width = max(max_len + 4, 12)
+        ws.column_dimensions[col_letter].width = max(max_len + 4, 13)
 
     excel_file = "cart_inspection_report.xlsx"
     wb.save(excel_file)
